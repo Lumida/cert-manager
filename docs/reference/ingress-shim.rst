@@ -5,7 +5,7 @@ ingress-shim
 cert-manager can be configured to automatically provision TLS certificates for
 Ingress resources via annotations on your Ingresses.
 
-A small sub-component of cert-manager, ingress-shim_ is responsible for this.
+A small sub-component of cert-manager, ingress-shim, is responsible for this.
 
 How it works
 ============
@@ -32,7 +32,8 @@ when deploying using Helm:
 
 .. code-block:: shell
 
-   --set ingressShim.extraArgs='{--default-issuer-name=letsencrypt-prod,--default-issuer-kind=ClusterIssuer}'
+   --set ingressShim.defaultIssuerName=letsencrypt-prod \
+   --set ingressShim.defaultIssuerKind=ClusterIssuer
 
 
 In the above example, cert-manager will create Certificate resources that reference the ClusterIssuer `letsencrypt-prod` for all Ingresses that have a ``kubernetes.io/tls-acme: "true"`` annotation.
@@ -68,5 +69,11 @@ Certificate resources to be automatically created:
   configuration of the ingress-shim (see above). Namely, a default issuer must be
   specified as arguments to the ingress-shim container.
 
+* ``certmanager.k8s.io/acme-http01-edit-in-place: "true"`` - if the ACME challenge type
+  has been set to http01, and the ingress has the 'kubernetes.io/tls-acme: true'
+  annotation, this controls whether the ingress is modified 'in-place', or a new
+  one created specifically for the http01 challenge. If present, and set to "true"
+  the existing ingress will be modified. Any other value, or the absence of the
+  annotation assumes "false".
+
 .. _kube-lego: https://github.com/jetstack/kube-lego
-.. _ingress-shim: https://github.com/jetstack/cert-manager/tree/master/cmd/ingress-shim

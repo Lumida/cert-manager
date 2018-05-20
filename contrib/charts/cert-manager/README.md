@@ -49,7 +49,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the cert-manager chart and their default values.
+The following table lists the configurable parameters of the cert-manager chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
@@ -58,6 +58,8 @@ The following tables lists the configurable parameters of the cert-manager chart
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `replicaCount`  | Number of cert-manager replicas  | `1` |
 | `createCustomResource` | Create CRD/TPR with this release | `true` |
+| `clusterResourceNamespace` | Override the namespace used to store DNS provider credentials etc. for ClusterIssuer resources | Same namespace as cert-manager pod
+| `leaderElection.Namespace` | Override the namespace used to store the ConfigMap for leader election | Same namespace as cert-manager pod
 | `certificateResourceShortNames` | Custom aliases for Certificate CRD | `["cert", "certs"]` |
 | `extraArgs` | Optional flags for cert-manager | `[]` |
 | `rbac.create` | If `true`, create and use RBAC resources | `true`
@@ -67,12 +69,10 @@ The following tables lists the configurable parameters of the cert-manager chart
 | `nodeSelector` | Node labels for pod assignment | `{}` |
 | `affinity` | Node affinity for pod assignment | `{}` |
 | `tolerations` | Node tolerations for pod assignment | `[]` |
-| `ingressShim.enabled` | Enable ingress-shim for automatic ingress integration | `true`|
-| `ingressShim.extraArgs` | Optional flags for ingress-shim | `[]` |
-| `ingressShim.resources` | CPU/memory resource requests/limits for ingress-shim | `requests: {cpu: 10m, memory: 32Mi}` |
-| `ingressShim.image.repository` | Image repository for ingress-shim | `quay.io/jetstack/cert-manager-ingress-shim` |
-| `ingressShim.image.tag` | Image tag for ingress-shim. Defaults to `image.tag` if empty | `` |
-| `ingressShim.image.pullPolicy` | Image pull policy for ingress-shim | `IfNotPresent` |
+| `ingressShim.defaultIssuerName` | Optional default issuer to use for ingress resources |  |
+| `ingressShim.defaultIssuerKind` | Optional default issuer kind to use for ingress resources |  |
+| `ingressShim.defaultACMEChallengeType` | Optional default challenge type to use for ingresses using ACME issuers |  |
+| `ingressShim.defaultACMEDNS01ChallengeProvider` | Optional default DNS01 challenge provider to use for ingresses using ACME issuers with DNS01 |  |
 | `podAnnotations` | Annotations to add to the cert-manager pod | `{}` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

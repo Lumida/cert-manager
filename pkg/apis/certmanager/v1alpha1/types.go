@@ -81,8 +81,34 @@ type IssuerSpec struct {
 }
 
 type IssuerConfig struct {
-	ACME *ACMEIssuer `json:"acme,omitempty"`
-	CA   *CAIssuer   `json:"ca,omitempty"`
+	ACME  *ACMEIssuer  `json:"acme,omitempty"`
+	CA    *CAIssuer    `json:"ca,omitempty"`
+	Vault *VaultIssuer `json:"vault,omitempty"`
+}
+
+type VaultIssuer struct {
+	// Vault authentication
+	Auth VaultAuth `json:"auth"`
+	// Server is the vault connection address
+	Server string `json:"server"`
+	// Vault URL path to the certificate role
+	Path string `json:"path"`
+}
+
+// Vault authentication  can be configured:
+// - With a secret containing a token. Cert-manager is using this token as-is.
+// - With a secret containing a AppRole. This AppRole is used to authenticate to
+//   Vault and retrieve a token.
+type VaultAuth struct {
+	// This Secret contains the Vault token key
+	TokenSecretRef SecretKeySelector `json:"tokenSecretRef,omitempty"`
+	// This Secret contains a AppRole and Secret
+	AppRole VaultAppRole `json:"appRole,omitempty"`
+}
+
+type VaultAppRole struct {
+	RoleId    string            `json:"roleId"`
+	SecretRef SecretKeySelector `json:"secretRef"`
 }
 
 type CAIssuer struct {
@@ -373,6 +399,9 @@ type ACMEOrderChallenge struct {
 
 	// Challenge key for this challenge
 	Key string `json:"key"`
+
+	// Set to true if this challenge is for a wildcard domain
+	Wildcard bool `json:"wildcard"`
 
 	// Configuration used to present this challenge
 	ACMESolverConfig `json:",inline"`
